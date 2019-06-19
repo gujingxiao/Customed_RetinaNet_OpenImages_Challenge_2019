@@ -53,6 +53,8 @@ keras           2.2.4
 
 3. GPU的使用可以自行修改，需要注意的是，如果使用单GPU，保存的模型为snapshots，预测和验证前要先使用convert_retinanet_model.py来转换，否则会出现问题; 如果使用多GPU，保存模型就是weights，可以直接验证和预测
 
+4. 最开始训练时，会根据annotation信息生成一个json，这时会报一些warning，不用担心，等待处理完毕就好，大概需要3-5分钟; 后面再训练，就会直接加载生成好的json，不用再处理了
+
 # 验证过程
 1. 验证脚本是 retinanet_training_oid_2019/eval_oid_2019_resnet50.py，配置params的地方基本与训练相同
 
