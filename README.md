@@ -1,20 +1,22 @@
 # Customed_RetinaNet_OpenImages_Challenge_2019
 Customed Modified Keras RetinaNet for OpenImages Challenge 2019
 
-# Requirement
+# 系统需求
 python 3.6
 
 tensorflow-gpu  1.12.0
 
 keras           2.2.4
 
+1T固态硬盘（机械硬盘巨慢...）
+
 本工程自带keras-retinanet，所以千万不要再安装了
 
 # 成绩记录
 
-|Models|Loss Function|Base LR|Batch Size|LR_Decay|Other Parameters|MAP|
-|:---|:---|:---|:---|:---|:---|:---|
-|Resnet50|Focal Loss + NMS|0.0001|4|0.85|deep_chain_layers=3, deep_chain_relu_cells=1024|0.85407|
+|Models|Loss Function|Base LR|Batch Size|LR_Decay|MAP|
+|:---|:---|:---|:---|:---|:---|
+|Resnet50|Focal Loss + NMS|0.0001|4|0.85|0.41625|
 
 # 数据存放格式
 1. 假设数据存放根目录为 OpenimageV5，进入到labelProcess中，将label-levels.py中ROOT_PATH改为OpenimageV5的路径
