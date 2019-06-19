@@ -1,13 +1,12 @@
 # coding: utf-8
 __author__ = 'Jingxiao Gu : https://www.kaggle.com/gujingxiao0726'
 
-import json
-import numpy
 import pandas as pd
+from labelProcess.label_levels import ROOT_PATH
 
 
 def get_description_for_labels():
-    out = open('/media/gujingxiao/5a3e3730-4fda-48c0-9962-9998b9a1c116/OpenimageV5/label/challenge-2019-classes-description-500.csv')
+    out = open(ROOT_PATH + 'label/challenge-2019-classes-description-500.csv')
     lines = out.readlines()
     ret_1, ret_2 = dict(), dict()
     for l in lines:
@@ -16,7 +15,7 @@ def get_description_for_labels():
         ret_2[arr[1]] = arr[0]
     return ret_1, ret_2
 
-csvfile = '/media/gujingxiao/5a3e3730-4fda-48c0-9962-9998b9a1c116/OpenimageV5/label/challenge-2019-train-detection-bbox.csv'
+csvfile = ROOT_PATH + 'label/challenge-2019-train-detection-bbox.csv'
 
 boxes = pd.read_csv(csvfile)
 print(len(boxes))

@@ -115,7 +115,7 @@ def generate_images_annotations_json(main_dir, metadata_dir, subset, cls_index, 
             try:
                 width, height = images_sizes[frame]
             except:
-                print('Image read error: {}'.format(frame))
+                # print('Image read error: {}'.format(frame))
                 continue
 
             if class_name == '':

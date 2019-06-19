@@ -7,12 +7,8 @@ from hashlib import md5
 import glob
 import os
 
-DATASET_PATH = '/media/gujingxiao/5a3e3730-4fda-48c0-9962-9998b9a1c116/OpenimageV5/'
-STORAGE_PATH_TRAIN = DATASET_PATH + 'train/'
-STORAGE_PATH_TEST = DATASET_PATH + 'test/'
-STORAGE_PATH_VALID = DATASET_PATH + 'validation/'
-STORAGE_PATH_KAGGLE_TEST = INPUT_PATH + 'test/'
-
+STORAGE_PATH_TRAIN = ROOT_PATH + 'train/'
+STORAGE_PATH_TEST = ROOT_PATH + 'test/'
 
 def get_md5(fname):
     hash_md5 = md5()
@@ -47,13 +43,15 @@ def get_image_stat(type):
         files = glob.glob(STORAGE_PATH_TRAIN + '*.jpg')
     elif type == 'test':
         files = glob.glob(STORAGE_PATH_TEST + '*.jpg')
-    elif type == 'validation':
-        files = glob.glob(STORAGE_PATH_VALID + '*.jpg')
-    elif type == 'kaggle_test':
-        files = glob.glob(STORAGE_PATH_KAGGLE_TEST + '*.jpg')
+
+    file_length = len(files)
+    count = 0
+
     for f in files:
         id = os.path.basename(f)[:-4]
-        print('Go for {}'.format(id))
+        if count % 1000 == 0:
+            print(count, '/', file_length)
+        # print('Go for {}'.format(id))
         h, w, c = get_shape(f)
         m = get_md5(f)
         sz = os.path.getsize(f)
@@ -64,6 +62,7 @@ def get_image_stat(type):
         out.write(',' + str(sz))
         out.write(',' + str(m))
         out.write('\n')
+        count += 1
     out.close()
 
 
@@ -72,7 +71,5 @@ if __name__ == '__main__':
         import pyvips
     except:
         print('PYVips not available. Image parameters detection will be slow!')
-    get_image_stat('validation')
-    # get_image_stat('test')
-    # get_image_stat('train')
-    # get_image_stat('kaggle_test')
+    get_image_stat('test')
+    get_image_stat('train')

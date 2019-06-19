@@ -1,7 +1,6 @@
 # coding: utf-8
 __modified_author__ = 'Jingxiao Gu : https://www.kaggle.com/gujingxiao0726'
 
-
 from labelProcess.label_levels import *
 import os
 import pandas as pd
@@ -39,7 +38,7 @@ def create_level1_files():
     out.close()
     # not_negative = [d2[f] for f in LEVEL_OTHER_LABELS]
 
-    if 1:
+    if 0:
         boxes = pd.read_csv(ROOT_PATH + 'label/challenge-2019-validation-detection-bbox.csv')
         print(len(boxes))
 
@@ -83,7 +82,7 @@ def create_level2_files():
     out.close()
     # not_negative = [d2[f] for f in LEVEL_OTHER_LABELS]
 
-    if 1:
+    if 0:
         boxes = pd.read_csv(ROOT_PATH + 'label/challenge-2019-validation-detection-bbox.csv')
         print(len(boxes))
 
@@ -127,7 +126,7 @@ def create_level3_files():
     out.close()
     # not_negative = [d2[f] for f in LEVEL_OTHER_LABELS]
 
-    if 1:
+    if 0:
         boxes = pd.read_csv(ROOT_PATH + 'label/challenge-2019-validation-detection-bbox.csv')
         print(len(boxes))
 
@@ -171,7 +170,7 @@ def create_level4_files():
     out.close()
     # not_negative = [d2[f] for f in LEVEL_OTHER_LABELS]
 
-    if 1:
+    if 0:
         boxes = pd.read_csv(ROOT_PATH + 'label/challenge-2019-validation-detection-bbox.csv')
         print(len(boxes))
 

@@ -5,7 +5,6 @@ from labelProcess.label_levels import ROOT_PATH
 
 for level in range(1, 5):
     csvfile = ROOT_PATH + 'output/level_{}_files/train-annotations-bbox-level-{}.csv'.format(level, level)
-    savefile = ROOT_PATH + 'output/level_{}_files/train-exists-annotations-bbox-level-{}-ori.csv'.format(level, level)
     imagePath = ROOT_PATH + 'train/'
 
     boxes = pd.read_csv(csvfile)
@@ -20,10 +19,6 @@ for level in range(1, 5):
 
     reduced_boxes = boxes[boxes['ImageID'].isin(imageNameList)]
     print('Image folder has Level {} {} Images, {} boxes.'.format(level, len(reduced_boxes['ImageID'].value_counts()),len(reduced_boxes)))
-    print('Saving file: {}'.format(savefile))
-    reduced_boxes.to_csv(savefile, index=False)
-    print('Done saving level {} file.'.format(level))
-
 
     # Get Validation ID
     if level == 1:

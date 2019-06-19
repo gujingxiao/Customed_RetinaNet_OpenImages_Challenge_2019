@@ -363,14 +363,14 @@ def main(args=None):
 if __name__ == '__main__':
     params = [
         # '--snapshot', 'snapshots/resnet50_oid_09.h5',
-        '--weights', 'resnet50_models/resnet50_oid_map_level_1_03238.h5',
+        '--weights', 'pretrained_models/retinanet_resnet101_converted.h5',
         # '--imagenet-weights',
         # '--gpu', '1',
         '--label-level','1',
         '--steps', '200',
         '--multi-gpu', '2',
         '--multi-gpu-force',
-        '--backbone', 'resnet50',
+        '--backbone', 'resnet101',
         '--batch-size', '2',
         '--image-min-side', '728',
         '--image-max-side', '1024',
