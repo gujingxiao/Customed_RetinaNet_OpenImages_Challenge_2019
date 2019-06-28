@@ -17,6 +17,8 @@ keras           2.2.4
 |Models|Loss Function|Base LR|Batch Size|LR_Decay|MAP|
 |:---|:---|:---|:---|:---|:---|
 |Resnet50|Focal Loss + NMS|0.0001|4|0.85|0.44599|
+|Resnet101|Focal Loss + NMS|0.0001|-|0.85|-|
+|Resnet152|Focal Loss + NMS|0.0001|-|0.85|-|
 
 # 数据存放格式
 1. 假设数据存放根目录为 OpenimageV5，进入到labelProcess中，将label-levels.py中ROOT_PATH改为OpenimageV5的路径
@@ -65,8 +67,8 @@ keras           2.2.4
 
 2. 首先使用retinanet_inference_submission/retinanet_inference_make_submission.py，修改label_level然后修改model path至与label相匹配的模型，修改inference_predict为True，然后即可执行;这里会将test中99999图片都跑一遍，如果你的卡很多，可以修改gpu_use到不同的卡，多次运行该脚本，可以达到并行运算的效果，预计4块卡同时跑，一个小时可以预测完毕。
 
-3. 预测完毕后，将inference_predict改为False，这时iou_thr为0。55不要动，可以修改skip_box_condifence为0。05 0。1 0。15等不同的值，数值越小得分越高，但是生成出来的预测csv也会非常巨大。建议测评时使用0。1。修改好后，运行此脚本等待生成完毕。每个level都需要生成一次。
+3. 预测完毕后，将inference_predict改为False，这时iou_thr为0.55不要动，可以修改skip_box_condifence为0.05 0.1 0.15等不同的值，数值越小得分越高，但是生成出来的预测csv也会非常巨大。建议测评时使用0.1。修改好后，运行此脚本等待生成完毕。每个level都需要生成一次。
 
-4。 生成预测csv完毕后，进入到create_higher_level_predctions.py中，修改level和相应路径，运行等待生成扩展csv，每个level都需要生成一次。
+4. 生成预测csv完毕后，进入到create_higher_level_predctions.py中，修改level和相应路径，运行等待生成扩展csv，每个level都需要生成一次。
 
-5。 扩展csv都生成完毕后，进入到concat_all_levels_submission.py中，修改不同文件路径，然后运行，等待用于提交的csv生成。生成完毕后，提交文件非常大，建议先压缩成zip格式，再进行上传，上传需要翻墙。
+5. 扩展csv都生成完毕后，进入到concat_all_levels_submission.py中，修改不同文件路径，然后运行，等待用于提交的csv生成。生成完毕后，提交文件非常大，建议先压缩成zip格式，再进行上传，上传需要翻墙。
