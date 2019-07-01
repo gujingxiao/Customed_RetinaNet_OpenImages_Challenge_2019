@@ -281,10 +281,7 @@ class OpenImagesGenerator(Generator):
         type = os.path.basename(self.base_dir)
         up = os.path.join(os.path.dirname(os.path.dirname(self.base_dir)), type)
         id = self.id_to_image_id[image_index]
-        if type == 'train':
-            path = os.path.join(up, id + '.jpg')
-        else:
-            path = os.path.join(up, id + '.jpg')
+        path = os.path.join(up, id + '.jpg')
         return path
 
     def load_image(self, image_index):

@@ -183,15 +183,15 @@ def create_csv_for_retinanet(input_dir, out_file, label_arr, skip_box_thr=0.05, 
 
 
 if __name__ == '__main__':
-    gpu_use = 1
-    skip_box_confidence = 0.1
+    gpu_use = 0
+    skip_box_confidence = 0.05
     iou_thr = 0.55
     limit_boxes_per_image = 300
     show_result = False
     type = 'avg'
     backbone = 'resnet50'
-    label_level = 3
-    pretrained_model_path = '../new_level_resnet50/resnet50_oid_map_level_{}_04666.h5'.format(label_level)
+    label_level = 5
+    pretrained_model_path = '../new_level_resnet50/resnet50_oid_map_level_{}_05010.h5'.format(label_level)
     inference_predict = False
 
     if label_level == 1:

@@ -97,7 +97,7 @@ def create_models(backbone_retinanet, num_classes, weights, multi_gpu=0, freeze_
             'regression'    : losses.smooth_l1(),
             'classification': losses.focal()
         },
-        optimizer=keras.optimizers.adam(lr=8e-5, clipnorm=0.001)
+        optimizer=keras.optimizers.adam(lr=1e-4, clipnorm=0.001)
     )
 
     return model, training_model
@@ -139,7 +139,7 @@ def create_callbacks(model, args):
         checkpoint = keras.callbacks.ModelCheckpoint(
             os.path.join(
                 args.snapshot_path,
-                '{backbone}_{dataset_type}_{{epoch:02d}}.h5'.format(backbone=args.backbone, dataset_type=args.dataset_type)
+                '{backbone}_{dataset_type}_level_{level}_{{epoch:02d}}.h5'.format(backbone=args.backbone, level=args.label_level, dataset_type=args.dataset_type)
             ),
             verbose=1,
             # save_best_only=True,
@@ -156,6 +156,7 @@ def create_callbacks(model, args):
         verbose  = 1,
         mode     = 'auto',
         cooldown = 0,
+        min_lr = 5e-6,
     ))
 
     return callbacks
@@ -179,28 +180,32 @@ def create_generators(args, preprocess_image):
         transform_generator = random_transform_generator(
             min_rotation=-0.1,
             max_rotation=0.1,
-            min_translation=(-0.1, -0.1),
-            max_translation=(0.1, 0.1),
             min_scaling=(0.8, 0.8),
             max_scaling=(1.2, 1.2),
             flip_x_chance=0.5,
-            flip_y_chance=0.5,
+        )
+        train_generator = OpenImagesGenerator(
+            args.main_dir,
+            subset='train',
+            label_level=args.label_level,
+            version=args.version,
+            labels_filter=args.labels_filter,
+            annotation_cache_dir=args.annotation_cache_dir,
+            fixed_labels=args.fixed_labels,
+            transform_generator=transform_generator,
+            **common_args
         )
     else:
-        transform_generator = random_transform_generator(flip_x_chance=0.5)
-
-
-    train_generator = OpenImagesGenerator(
-        args.main_dir,
-        subset='train',
-        label_level=args.label_level,
-        version=args.version,
-        labels_filter=args.labels_filter,
-        annotation_cache_dir=args.annotation_cache_dir,
-        fixed_labels=args.fixed_labels,
-        transform_generator=transform_generator,
-        **common_args
-    )
+        train_generator = OpenImagesGenerator(
+            args.main_dir,
+            subset='train',
+            label_level=args.label_level,
+            version=args.version,
+            labels_filter=args.labels_filter,
+            annotation_cache_dir=args.annotation_cache_dir,
+            fixed_labels=args.fixed_labels,
+            **common_args
+        )
 
     return train_generator
 
@@ -283,7 +288,7 @@ def parse_args(args):
     parser.add_argument('--no-snapshots',    help='Disable saving snapshots.', dest='snapshots', action='store_false')
     parser.add_argument('--no-evaluation',   help='Disable per epoch evaluation.', dest='evaluation', action='store_false')
     parser.add_argument('--freeze-backbone', help='Freeze training of backbone layers.', default=False, type=bool)
-    parser.add_argument('--random-transform', help='Randomly transform image and annotations.', action='store_true')
+    parser.add_argument('--random-transform', help='Randomly transform image and annotations.', default=False, type=bool)
     parser.add_argument('--image-min-side', help='Rescale the image so the smallest side is min_side.', type=int, default=728)
     parser.add_argument('--image-max-side', help='Rescale the image if the largest side is larger than max_side.', type=int, default=1024)
 
@@ -353,28 +358,29 @@ def main(args=None):
         generator=train_generator,
         steps_per_epoch=args.steps,
         epochs=args.epochs,
-        verbose=1,
+        verbose=2,
         callbacks=callbacks,
         initial_epoch=init_epoch,
         max_queue_size= 20,
-        use_multiprocessing=True)
+        use_multiprocessing=False)
 
 
 if __name__ == '__main__':
     params = [
         # '--snapshot', 'snapshots/resnet50_oid_09.h5',
-        '--weights', 'pretrained_models/retinanet_resnet101_converted.h5',
+        '--weights', '../new_level_resnet50/resnet50_oid_map_level_1_04093.h5',
         # '--imagenet-weights',
         # '--gpu', '1',
         '--label-level','1',
-        '--steps', '200',
+        '--steps', '1000',
         '--multi-gpu', '2',
         '--multi-gpu-force',
-        '--backbone', 'resnet101',
-        '--batch-size', '2',
+        '--backbone', 'resnet50',
+        '--batch-size', '8',
         '--image-min-side', '728',
         '--image-max-side', '1024',
         '--freeze-backbone', 'True',
+        '--random-transform', 'False',
         'oid',
         ROOT_PATH,
     ]

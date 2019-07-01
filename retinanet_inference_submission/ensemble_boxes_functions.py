@@ -1,5 +1,6 @@
 # coding: utf-8
-__author__ = 'ZFTurbo: https://kaggle.com/zfturbo'
+__original_author__ = 'ZFTurbo: https://kaggle.com/zfturbo'
+__modified_author__ = 'Jingxiao Gu : https://www.kaggle.com/gujingxiao0726'
 
 import numpy as np
 

@@ -169,7 +169,7 @@ def parse_args(args):
 
     oid_parser = subparsers.add_parser('oid')
     oid_parser.add_argument('main_dir', help='Path to dataset directory.')
-    oid_parser.add_argument('--version',  help='The current dataset version is v4.', default='challenge2018')
+    oid_parser.add_argument('--version',  help='The current dataset version is v4.', default='challenge2019')
     oid_parser.add_argument('--labels-filter',  help='A list of labels to filter.', type=csv_list, default=None)
     oid_parser.add_argument('--annotation-cache-dir', help='Path to store annotation cache.', default='.')
     oid_parser.add_argument('--fixed-labels', help='Use the exact specified labels.', default=False)
@@ -268,10 +268,10 @@ if __name__ == '__main__':
 
     # You can start training from intermediate point just uncomment '--snapshot' param
     params = [
-        '--weights', 'resnet50_models/resnet50_oid_map_level_4_07202.h5',
+        '--weights', 'snapshots/resnet50_oid_level_1_35.h5',
         '--gpu', '0',
         '--steps', '10000',
-        '--label-level', '4',
+        '--label-level', '1',
         # '--multi-gpu', '2',
         # '--multi-gpu-force',
         '--backbone', 'resnet50',

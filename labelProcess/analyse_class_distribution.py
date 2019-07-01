@@ -26,35 +26,35 @@ dict_value = {'label':valueList.index,'number':valueList.values}
 
 d1, d2 = get_description_for_labels()
 
-# Level 1 Top 0-80 Number:1418594 - 12135
+# Level 1 Top 0-50 Number:1418594 - 27272
 labels_to_find = []
-for l in list(dict_value['label'][0:80]):
+for l in list(dict_value['label'][0:50]):
     labels_to_find.append(d1[l])
-print(dict_value['label'][0:80])
+print(dict_value['label'][0:50])
 print(labels_to_find)
-print(dict_value['number'][0:80])
+print(dict_value['number'][0:50])
 
-# Level 2 Top 80-200 Number:12053 - 2388
+# Level 2 Top 50-200 Number:26236 - 2388
 labels_to_find = []
-for l in list(dict_value['label'][80:200]):
+for l in list(dict_value['label'][50:200]):
     labels_to_find.append(d1[l])
-print(dict_value['label'][80:200])
+print(dict_value['label'][50:200])
 print(labels_to_find)
-print(dict_value['number'][80:200])
+print(dict_value['number'][50:200])
 
-# Level 3 Top 200-400 Number:2384 - 481
+# Level 3 Top 200-350 Number:2384 - 710
 labels_to_find = []
-for l in list(dict_value['label'][200:400]):
+for l in list(dict_value['label'][200:350]):
     labels_to_find.append(d1[l])
-print(dict_value['label'][200:400])
+print(dict_value['label'][200:350])
 print(labels_to_find)
-print(dict_value['number'][200:400])
+print(dict_value['number'][200:350])
 
-# Level 4 Top 400-500 Number:478 - 14
+# Level 4 Top 350-500 Number:688 - 14
 labels_to_find = []
-for l in list(dict_value['label'][400:500]):
+for l in list(dict_value['label'][350:500]):
     labels_to_find.append(d1[l])
-print(dict_value['label'][400:500])
+print(dict_value['label'][350:500])
 print(labels_to_find)
-print(dict_value['number'][400:500])
+print(dict_value['number'][350:500])
 
