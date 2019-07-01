@@ -60,7 +60,7 @@ keras           2.2.4
 
 2. 掌握了分布后，要分别将四个level的annotations抽取出来，下面运行 labelProcess/create_files_for_training_by_levels.py，将会在OpenimageV5中指定文件夹中生成每个level的描述文件和训练annotations文件
 
-3. 生成了每个level的信息后，运行 labelProcess/gen_exists_annotation.py， 这个脚本将会根据train中存放的图片，将所有存在图片的annotation提取出来，并随机按比例生成val-exists-annotations-bbox-level-X.csv和train-exists-annotations-bbox-level-X.csv。训练和验证时使用的就是最后生成的这两个csv文件，四个level的全部生成完毕后，与标签相关的工作就做完了（验证集比例可以自行在脚本中修改）
+3. 生成了每个level的信息后，运行 labelProcess/gen_exists_annotation.py， 这个脚本将会根据train中存放的图片，将所有存在图片的annotation提取出来，并随机按比例生成val-exists-annotations-bbox-level-X.csv和train-exists-annotations-bbox-level-X.csv。训练和验证时使用的就是最后生成的这两个csv文件，五个level的全部生成完毕后，与标签相关的工作就做完了（验证集比例可以自行在脚本中修改）
 
 4. 然后运行 labelProcess/find_image_parameters.py， 统计并保存训练集、测试集的图像信息，这个步骤大概需要15-20mins
 
