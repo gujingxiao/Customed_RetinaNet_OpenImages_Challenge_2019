@@ -289,7 +289,7 @@ def parse_args(args):
     parser.add_argument('--no-evaluation',   help='Disable per epoch evaluation.', dest='evaluation', action='store_false')
     parser.add_argument('--freeze-backbone', help='Freeze training of backbone layers.', default=False, type=bool)
     parser.add_argument('--random-transform', help='Randomly transform image and annotations.', default=False, type=bool)
-    parser.add_argument('--image-min-side', help='Rescale the image so the smallest side is min_side.', type=int, default=728)
+    parser.add_argument('--image-min-side', help='Rescale the image so the smallest side is min_side.', type=int, default=768)
     parser.add_argument('--image-max-side', help='Rescale the image if the largest side is larger than max_side.', type=int, default=1024)
 
     return check_args(parser.parse_args(args))
@@ -377,10 +377,10 @@ if __name__ == '__main__':
         '--multi-gpu-force',
         '--backbone', 'resnet50',
         '--batch-size', '8',
-        '--image-min-side', '728',
+        '--image-min-side', '768',
         '--image-max-side', '1024',
-        '--freeze-backbone', 'True',
-        '--random-transform', 'False',
+        '--freeze-backbone', True,
+        '--random-transform', False,
         'oid',
         ROOT_PATH,
     ]
