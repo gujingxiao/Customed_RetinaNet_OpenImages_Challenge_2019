@@ -16,18 +16,20 @@ keras           2.2.4
 
 |Models|Resolution|Loss Function|Base LR|Batch Size|LR_Decay|MAP|
 |:---|:---|:---|:---|:---|:---|:---|
-|Resnet50|1024 x 728|Focal Loss + NMS|0.0001|4|0.85|0.46005|
-|Resnet101|1024 x 728|Focal Loss + NMS|0.0001|-|0.85|-|
+|Resnet50|1024 x 768|Focal Loss + NMS|0.0001|4|0.85|0.46005|
+|Resnet101|1024 x 768|Focal Loss + NMS|0.0001|-|0.85|-|
 |Resnet152|800 x 600|Focal Loss + NMS|0.0001|-|0.85|-|
 
 # 数据统计
 |Level|Images|Boxes|Train Image|Val Images|
 |:---|:---|:---|:---|:---|
 |1|1310287|8767223|1297241|13046|
+|压缩 1|-|4743271|697904|13046|
 |2|417349|987943|404872|12477|
 |3|113760|194934|109210|4550|
 |4|36186|54673|34381|1805|
 |5|238109|1496574|233374|4735|
+|压缩 5|-|1132009|204779|4735|
 
 # 训练参数配置
 |Level|Batch Size|Steps|Epochs|Target Loss|
