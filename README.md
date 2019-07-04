@@ -20,6 +20,12 @@ keras           2.2.4
 |Resnet101|1024 x 768|Focal Loss + NMS|0.0001|-|0.85|-|
 |Resnet152|800 x 600|Focal Loss + NMS|0.0001|-|0.85|-|
 
+|Models|L1 local|L2 local|L3 local|L4 local|L5 local|L1 LB|L2 LB|L3 LB|L4 LB|L5 LB|
+|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|
+|Resnet50|0.4237|0.5010|0.6285|0.7448|0.2412|0.03859|0.13201|0.16437|0.13924|0.02262|
+|Resnet101|-|-|-|-|-|-|-|-|-|-|
+|Resnet152|-|-|-|-|-|-|-|-|-|-|
+
 # 数据统计
 |Level|Images|Boxes|Train Image|Val Images|
 |:---|:---|:---|:---|:---|
