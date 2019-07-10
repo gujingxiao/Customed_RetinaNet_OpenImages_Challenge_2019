@@ -19,7 +19,7 @@ def show_image_debug(id_to_labels, draw, boxes, scores, labels):
     # visualize detections
     for box, score, label in zip(boxes[0], scores[0], labels[0]):
         # scores are sorted so we can break
-        if score < 0.25:
+        if score < 0.2:
             break
 
         color = (0, 255, 0)
@@ -50,7 +50,8 @@ def model_with_weights(model, weights, skip_mismatch):
         model.load_weights(weights, by_name=True, skip_mismatch=skip_mismatch)
     return model
 
-def get_retinanet_predictions_for_files(files, out_dir, pretrained_model_path, backbonename, label_level, show_debug_images=False):
+def get_retinanet_predictions_for_files(files, out_dir, pretrained_model_path, min_side, max_side,
+                                        backbonename, label_level, show_debug_images=False):
     backbone = models.backbone(backbonename)
     print('Label Size:', len(label_level))
     model = model_with_weights(backbone.retinanet(len(label_level), modifier=None), weights=pretrained_model_path, skip_mismatch=False)
@@ -76,7 +77,7 @@ def get_retinanet_predictions_for_files(files, out_dir, pretrained_model_path, b
             draw = cv2.cvtColor(draw, cv2.COLOR_BGR2RGB)
 
         image = preprocess_image(image)
-        image, scale = resize_image(image, min_side=728, max_side=1024)
+        image, scale = resize_image(image, min_side=min_side, max_side=max_side)
         image = np.expand_dims(image, axis=0)
 
         # process image
@@ -106,21 +107,17 @@ def create_csv_for_retinanet(input_dir, out_file, label_arr, skip_box_thr=0.05, 
     out = open(out_file, 'w')
     out.write('ImageId,PredictionString\n')
     d1, d2 = get_description_for_labels()
-    sample = ROOT_PATH + 'label/sample_submission.csv'
-    samplecsv = pd.read_csv(sample)
-    sampleid = np.array(samplecsv.ImageId)
-
-    for index in range(len(sampleid)):
-        f = os.path.join(input_dir, sampleid[index] + '.pkl')
+    files = glob.glob(input_dir + '*.pkl')
+    index = 0
+    for f in files:
         id = os.path.basename(f)[:-4]
+        # print(id)
         out.write(id + ',')
         if os.path.exists(f):
             boxes, scores, labels = load_from_file_fast(f)
-            filtered_boxes = filter_boxes(boxes, scores, labels, skip_box_thr)
-            merged_boxes = merge_all_boxes_for_image(filtered_boxes, intersection_thr, type)
+            merged_boxes = filter_boxes(boxes, scores, labels, skip_box_thr)
             if len(merged_boxes) > limit_boxes:
                 # sort by score
-                merged_boxes = np.array(merged_boxes)
                 merged_boxes = merged_boxes[merged_boxes[:, 1].argsort()[::-1]][:limit_boxes]
 
             for i in range(len(merged_boxes)):
@@ -137,19 +134,19 @@ def create_csv_for_retinanet(input_dir, out_file, label_arr, skip_box_thr=0.05, 
                     xmin = 0
                 if xmin > 1:
                     xmin = 1
-
+                #
                 xmax = b[2]
                 if xmax <= 0:
                     xmax = 0
                 if xmax > 1:
                     xmax = 1
-
+                #
                 ymin = b[1]
                 if ymin < 0:
                     ymin = 0
                 if ymin > 1:
                     ymin = 1
-
+                #
                 ymax = b[3]
                 if ymax <= 0:
                     ymax = 0
@@ -179,20 +176,23 @@ def create_csv_for_retinanet(input_dir, out_file, label_arr, skip_box_thr=0.05, 
             out.write('\n')
 
         if index % 100 == 0:
-            print(index, '/', len(sampleid))
+            print(index, '/', len(files))
+        index += 1
 
 
 if __name__ == '__main__':
-    gpu_use = 0
+    gpu_use = 1
     skip_box_confidence = 0.05
     iou_thr = 0.55
     limit_boxes_per_image = 300
     show_result = False
     type = 'avg'
     backbone = 'resnet50'
-    label_level = 5
-    pretrained_model_path = '../new_level_resnet50/resnet50_oid_map_level_{}_05010.h5'.format(label_level)
-    inference_predict = False
+    label_level = 1
+    min_size = 768
+    max_size = 1024
+    pretrained_model_path = '../retinanet_training_oid_2019/snapshots/resnet50_oid_level_{}_06.h5'.format(label_level)
+    inference_predict = True
 
     if label_level == 1:
         labels_list = LEVEL_1_LABELS
@@ -222,10 +222,10 @@ if __name__ == '__main__':
 
     if inference_predict == True:
         print('Start making predictions. Backbone {}, level {}, Saving pkl folder: {}'.format(backbone, label_level, output_cache_directory))
-        get_retinanet_predictions_for_files(files_to_process, output_cache_directory, pretrained_model_path,
+        get_retinanet_predictions_for_files(files_to_process, output_cache_directory, pretrained_model_path, min_size, max_size,
                                             backbone, labels_list, show_debug_images=show_result)
         print('Finish making predictions.')
     else:
         print('Start creating level {} csv file.'.format(label_level))
-        create_csv_for_retinanet(output_cache_directory, 'predictions_{}_{}_{}_level_{}.csv'.format(skip_box_confidence, iou_thr, type, label_level),
+        create_csv_for_retinanet(output_cache_directory, 'predictions_{}_{}_{}_level_{}444.csv'.format(skip_box_confidence, iou_thr, type, label_level),
                                  labels_list, skip_box_confidence, iou_thr, limit_boxes_per_image, type=type)

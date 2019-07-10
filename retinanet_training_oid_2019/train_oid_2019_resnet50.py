@@ -151,7 +151,7 @@ def create_callbacks(model, args):
 
     callbacks.append(keras.callbacks.ReduceLROnPlateau(
         monitor  = 'loss',
-        factor   = 0.85,
+        factor   = 0.8,
         patience = 2,
         verbose  = 1,
         mode     = 'auto',
@@ -329,6 +329,7 @@ def main(args=None):
         if weights is None and args.imagenet_weights:
             weights = backbone.download_imagenet()
 
+        print(args.freeze_backbone, args.image_max_side, args.image_min_side)
         print('Creating model, this may take a second...')
         model, training_model = create_models(
             backbone_retinanet=backbone.retinanet,
@@ -358,7 +359,7 @@ def main(args=None):
         generator=train_generator,
         steps_per_epoch=args.steps,
         epochs=args.epochs,
-        verbose=2,
+        verbose=1,
         callbacks=callbacks,
         initial_epoch=init_epoch,
         max_queue_size= 20,
@@ -368,18 +369,19 @@ def main(args=None):
 if __name__ == '__main__':
     params = [
         # '--snapshot', 'snapshots/resnet50_oid_09.h5',
-        '--weights', '../new_level_resnet50/resnet50_oid_map_level_1_04093.h5',
+        '--weights', 'snapshots/resnet50_oid_level_1_16.h5',
         # '--imagenet-weights',
-        # '--gpu', '1',
+        #'--no-weights',
+        # '--gpu', '0',
         '--label-level','1',
-        '--steps', '1000',
+        '--steps', '200',
         '--multi-gpu', '2',
         '--multi-gpu-force',
         '--backbone', 'resnet50',
-        '--batch-size', '8',
+        '--batch-size', '2',
         '--image-min-side', '768',
         '--image-max-side', '1024',
-        '--freeze-backbone', True,
+        '--freeze-backbone', 'True',
         '--random-transform', False,
         'oid',
         ROOT_PATH,

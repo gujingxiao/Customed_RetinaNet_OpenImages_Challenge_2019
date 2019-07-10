@@ -22,15 +22,15 @@ for level in range(1, 6):
 
     # Get Validation ID
     if level == 1:
-        ratio = 0.01
+        ratio = 0.007
     elif level == 2:
-        ratio = 0.03
+        ratio = 0.015
     elif level == 3:
-        ratio = 0.04
+        ratio = 0.03
     elif level == 4:
-        ratio = 0.05
+        ratio = 0.04
     else:
-        ratio = 0.02
+        ratio = 0.03
     savefile_val = ROOT_PATH + 'output/level_{}_files/val-exists-annotations-bbox-level-{}.csv'.format(level, level)
     savefile_train = ROOT_PATH + 'output/level_{}_files/train-exists-annotations-bbox-level-{}.csv'.format(level, level)
 

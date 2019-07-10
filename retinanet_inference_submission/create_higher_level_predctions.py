@@ -84,5 +84,5 @@ def create_higher_level_classes_from_csv(input_subm, out_file, return_only_new=F
 
 
 if __name__ == '__main__':
-    create_higher_level_classes_from_csv('retinanet_resnet50_submission_0.05_0.55_predictions.csv',
-                                         'retinanet_resnet50_submission_0.05_0.55_predictions_extention.csv', return_only_new=False)
+    create_higher_level_classes_from_csv('retinanet_ensemble_submission_0.05_0.85_predictions.csv',
+                                         'retinanet_ensemble_submission_0.05_0.85_predictions_all_levels.csv', return_only_new=False)

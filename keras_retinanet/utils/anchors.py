@@ -167,6 +167,7 @@ def guess_shapes(image_shape, pyramid_levels):
     """
     image_shape = np.array(image_shape[:2])
     image_shapes = [(image_shape + 2 ** x - 1) // (2 ** x) for x in pyramid_levels]
+    # print('guess_shapes', image_shapes)
     return image_shapes
 
 
@@ -194,7 +195,7 @@ def anchors_for_shape(
         np.array of shape (N, 4) containing the (x1, y1, x2, y2) coordinates for the anchors.
     """
     if pyramid_levels is None:
-        pyramid_levels = [3, 4, 5, 6, 7]
+        pyramid_levels = [2, 3, 4, 5, 6, 7]
     if strides is None:
         strides = [2 ** x for x in pyramid_levels]
     if sizes is None:
@@ -207,7 +208,6 @@ def anchors_for_shape(
     if shapes_callback is None:
         shapes_callback = guess_shapes
     image_shapes = shapes_callback(image_shape, pyramid_levels)
-
     # compute anchors over all pyramid levels
     all_anchors = np.zeros((0, 4))
     for idx, p in enumerate(pyramid_levels):
@@ -228,7 +228,6 @@ def shift(shape, stride, anchors):
     """
     shift_x = (np.arange(0, shape[1]) + 0.5) * stride
     shift_y = (np.arange(0, shape[0]) + 0.5) * stride
-
     shift_x, shift_y = np.meshgrid(shift_x, shift_y)
 
     shifts = np.vstack((

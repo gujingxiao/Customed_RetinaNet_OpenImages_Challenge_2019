@@ -46,7 +46,7 @@ class Generator(object):
         batch_size=1,
         group_method='ratio',  # one of 'none', 'random', 'ratio'
         shuffle_groups=True,
-        image_min_side=728,
+        image_min_side=768,
         image_max_side=1024,
         transform_parameters=None,
         compute_anchor_targets=anchor_targets_bbox,

@@ -8,18 +8,23 @@ skip_box_confidence = 0.05
 iou_thr = 0.55
 backbone = 'resnet50'
 
-level1 = 'predictions_{}_{}_avg_level_1.csv'.format(skip_box_confidence, iou_thr)
-level2 = 'predictions_{}_{}_avg_level_2.csv'.format(skip_box_confidence, iou_thr)
-level3 = 'predictions_{}_{}_avg_level_3.csv'.format(skip_box_confidence, iou_thr)
-level4 = 'predictions_{}_{}_avg_level_4.csv'.format(skip_box_confidence, iou_thr)
-level5 = 'predictions_{}_{}_avg_level_5.csv'.format(skip_box_confidence, iou_thr)
-saveName = 'retinanet_{}_submission_{}_{}_predictions.csv'.format(backbone, skip_box_confidence, iou_thr)
+level1 = 'retinanet_level_1_ensemble_thr_0.05_iou_0.85_type_max.csv'
+level2 = 'retinanet_level_2_ensemble_thr_0.05_iou_0.85_type_max.csv'
+level3 = 'retinanet_level_3_ensemble_thr_0.05_iou_0.85_type_max.csv'
+level4 = 'retinanet_level_4_ensemble_thr_0.05_iou_0.85_type_max.csv'
+level5 = 'retinanet_level_5_ensemble_thr_0.05_iou_0.85_type_max.csv'
+saveName = 'retinanet_ensemble_submission_{}_{}_predictions.csv'.format(skip_box_confidence, iou_thr)
 
 level1csv = pd.read_csv(level1)
+print(1)
 level2csv = pd.read_csv(level2)
+print(2)
 level3csv = pd.read_csv(level3)
+print(3)
 level4csv = pd.read_csv(level4)
+print(4)
 level5csv = pd.read_csv(level5)
+print(5)
 
 listid = np.array(level1csv.ImageId)
 predictionstring1 = level1csv.PredictionString

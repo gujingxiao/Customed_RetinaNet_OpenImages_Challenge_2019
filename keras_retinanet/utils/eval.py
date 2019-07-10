@@ -21,6 +21,7 @@ from .visualization import draw_detections, draw_annotations
 
 import numpy as np
 import os
+import time
 
 import cv2
 
@@ -70,10 +71,10 @@ def _get_detections(generator, model, score_threshold=0.05, max_detections=100, 
         A list of lists containing the detections for each image in the generator.
     """
     all_detections = [[None for i in range(generator.num_classes())] for j in range(generator.size())]
-
+    start = time.clock()
     for i in range(generator.size()):
-        if i % 100 == 0:
-            print('Finished Eval: {} / {}'.format(i, generator.size()))
+        if i % 100 == 0 and i != 0:
+            print('Finished Eval: {} / {}, Time used: {} s'.format(i, generator.size(), round(time.clock() - start)))
         raw_image    = generator.load_image(i)
         image        = generator.preprocess_image(raw_image.copy())
         image, scale = generator.resize_image(image)
@@ -110,6 +111,7 @@ def _get_detections(generator, model, score_threshold=0.05, max_detections=100, 
             all_detections[i][label] = image_detections[image_detections[:, -1] == label, :-1]
 
         print('{}/{}'.format(i + 1, generator.size()), end='\r')
+    print('Finished Eval: {} / {}, Time used: {} s'.format(generator.size(), generator.size(), round(time.clock() - start)))
 
     return all_detections
 

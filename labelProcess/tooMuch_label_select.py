@@ -3,15 +3,10 @@ import pandas as pd
 import numpy as np
 
 # Level 1
-# 'Man', 'Tree', 'Human face', 'Person', 'Woman', 'Footwear', 'Window'
-TOO_MUCH_LABELS = ['/m/04yx4', '/m/07j7r', '/m/0dzct', '/m/01g317', '/m/03bt1vf', '/m/09j5n', '/m/0d4v4']
+# 'Man', 'Human face', 'Woman', 'Window'
+TOO_MUCH_LABELS = ['/m/04yx4', '/m/0dzct', '/m/03bt1vf', '/m/0d4v4']
 csvfile = '/media/gujingxiao/f577505e-73a2-41d0-829c-eb4d01efa827/OpenimageV5/output/level_1_files/train-exists-annotations-bbox-level-1.csv'
 savefile = '/media/gujingxiao/f577505e-73a2-41d0-829c-eb4d01efa827/OpenimageV5/output/level_1_files/train-exists-annotations-bbox-level-1-select.csv'
-
-# Level 5
-# TOO_MUCH_LABELS = ['/m/03q69', '/m/0dzf4', '/m/04hgtk']
-# csvfile = '/media/gujingxiao/f577505e-73a2-41d0-829c-eb4d01efa827/OpenimageV5/output/level_5_files/train-exists-annotations-bbox-level-5.csv'
-# savefile = '/media/gujingxiao/f577505e-73a2-41d0-829c-eb4d01efa827/OpenimageV5/output/level_5_files/train-exists-annotations-bbox-level-5-select.csv'
 
 boxes = pd.read_csv(csvfile)
 idList = boxes['ImageID']
@@ -32,7 +27,7 @@ for idx in range(len(tooMuch_ori_index_sort)):
     tooMuch_ori_name = tooMuch_ori_index_sort.index[idx]
     tooMuch_ori_number = tooMuch_ori_index_sort.values[idx]
 
-    if float(tooMuch_number) / float(tooMuch_ori_number) > 0.75:
+    if float(tooMuch_number) / float(tooMuch_ori_number) > 0.8:
         if idx % 10000 == 0:
             print(idx, ' / ', len(tooMuch_ori_index_sort))
         bboxList.append(tooMuch_name)

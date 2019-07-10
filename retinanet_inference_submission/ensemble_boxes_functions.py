@@ -63,22 +63,16 @@ def bb_intersection_over_union(boxA, boxB):
 
 
 def filter_boxes(boxes, scores, labels, thr):
-    new_boxes = []
-    for i in range(boxes.shape[0]):
-        box = []
-        for j in range(boxes.shape[1]):
-            label = labels[i, j].astype(np.int64)
-            score = scores[i, j]
-            if score < thr:
-                break
-            # Fix for mirror predictions
-            if i == 0:
-                b = [int(label), float(score), float(boxes[i, j, 0]), float(boxes[i, j, 1]), float(boxes[i, j, 2]), float(boxes[i, j, 3])]
-            else:
-                b = [int(label), float(score), 1 - float(boxes[i, j, 2]), float(boxes[i, j, 1]), 1 - float(boxes[i, j, 0]), float(boxes[i, j, 3])]
-            box.append(b)
-        new_boxes.append(box)
-    return new_boxes
+    box = []
+    for j in range(boxes.shape[1]):
+        label = labels[0, j].astype(np.int64)
+        score = scores[0, j]
+        if score < thr:
+            break
+
+        b = [int(label), float(score), float(boxes[0, j, 0]), float(boxes[0, j, 1]), float(boxes[0, j, 2]), float(boxes[0, j, 3])]
+        box.append(b)
+    return np.array(box)
 
 
 def filter_boxes_v2(boxes, scores, labels, thr):
@@ -87,17 +81,12 @@ def filter_boxes_v2(boxes, scores, labels, thr):
         for i in range(len(boxes[t])):
             box = []
             for j in range(boxes[t][i].shape[0]):
-                label = labels[t][i][j].astype(np.int64)
+                label = labels[t][i][j].astype(np.int32)
                 score = scores[t][i][j]
                 if score < thr:
                     break
-                # Mirror fix !!!
-                if i == 0:
-                    b = [int(label), float(score), float(boxes[t][i][j, 0]), float(boxes[t][i][j, 1]), float(boxes[t][i][j, 2]), float(boxes[t][i][j, 3])]
-                else:
-                    b = [int(label), float(score), 1 - float(boxes[t][i][j, 2]), float(boxes[t][i][j, 1]), 1 - float(boxes[t][i][j, 0]), float(boxes[t][i][j, 3])]
+                b = [int(label), float(score), float(boxes[t][i][j, 0]), float(boxes[t][i][j, 1]), float(boxes[t][i][j, 2]), float(boxes[t][i][j, 3])]
                 box.append(b)
-            # box = np.array(box)
             new_boxes.append(box)
     return new_boxes
 
@@ -138,19 +127,36 @@ def merge_boxes_weighted(box1, box2, w1, w2, type):
 def merge_all_boxes_for_image(boxes, intersection_thr=0.55, type='avg'):
 
     new_boxes = boxes[0].copy()
+    compute_boxes = boxes[0].copy()
     init_weight = 1/len(boxes)
     weights = [init_weight] * len(new_boxes)
 
     for j in range(1, len(boxes)):
         for k in range(len(boxes[j])):
-            index, best_iou = find_matching_box(new_boxes, boxes[j][k], intersection_thr)
+            index, best_iou = find_matching_box(compute_boxes, boxes[j][k], intersection_thr)
             if index != -1:
-                new_boxes[index] = merge_boxes_weighted(new_boxes[index], boxes[j][k], weights[index], init_weight, type)
+                new_boxes[index] = merge_boxes_weighted(compute_boxes[index], boxes[j][k], weights[index], init_weight, type)
                 weights[index] += init_weight
             else:
                 new_boxes.append(boxes[j][k])
                 weights.append(init_weight)
+        compute_boxes = new_boxes.copy()
 
     for i in range(len(new_boxes)):
         new_boxes[i][1] *= weights[i]
     return np.array(new_boxes)
+
+
+# def new_merge_all_boxes_for_image(boxes, intersection_thr=0.7):
+#     new_boxes = []
+#     kp_boxes = []
+#     for line in boxes:
+#         for item in range(len(line)):
+#             new_boxes.append(line[item])
+#
+#     if len(new_boxes) > 0:
+#         new_boxes = np.array(new_boxes)
+#         kp = nms_standard(new_boxes[:, 1:].astype(np.float64).copy(), intersection_thr)
+#         kp_boxes = new_boxes[kp].copy()
+#
+#     return np.array(kp_boxes)

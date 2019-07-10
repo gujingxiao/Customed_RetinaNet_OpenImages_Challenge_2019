@@ -199,7 +199,7 @@ def parse_args(args):
     parser.add_argument('--no-evaluation',   help='Disable per epoch evaluation.', dest='evaluation', action='store_false')
     parser.add_argument('--freeze-backbone', help='Freeze training of backbone layers.', action='store_true')
     parser.add_argument('--random-transform', help='Randomly transform image and annotations.', action='store_true')
-    parser.add_argument('--image-min-side', help='Rescale the image so the smallest side is min_side.', type=int, default=728)
+    parser.add_argument('--image-min-side', help='Rescale the image so the smallest side is min_side.', type=int, default=768)
     parser.add_argument('--image-max-side', help='Rescale the image if the largest side is larger than max_side.', type=int, default=1024)
     return check_args(parser.parse_args(args))
 
@@ -268,7 +268,7 @@ if __name__ == '__main__':
 
     # You can start training from intermediate point just uncomment '--snapshot' param
     params = [
-        '--weights', 'snapshots/resnet50_oid_level_1_35.h5',
+        '--weights', 'snapshots/resnet50_oid_level_1_16.h5',
         '--gpu', '0',
         '--steps', '10000',
         '--label-level', '1',
@@ -276,7 +276,7 @@ if __name__ == '__main__':
         # '--multi-gpu-force',
         '--backbone', 'resnet50',
         '--batch-size', '1',
-        '--image-min-side', '728',
+        '--image-min-side', '768',
         '--image-max-side', '1024',
         'oid',
         ROOT_PATH,
