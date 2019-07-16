@@ -41,5 +41,5 @@ def delete_higher_level_classes_from_csv(input_subm, out_file):
 
 
 if __name__ == '__main__':
-    delete_higher_level_classes_from_csv('retinanet_ensemble_submission_0.2_0.8_predictions.csv',
-                                         'retinanet_ensemble_submission_0.2_0.8_predictions_children_levels.csv')
+    delete_higher_level_classes_from_csv('retinanet_ensemble_submission_0.1_0.55_predictions_all_levels.csv',
+                                         'retinanet_ensemble_submission_0.1_0.55_predictions.csv')

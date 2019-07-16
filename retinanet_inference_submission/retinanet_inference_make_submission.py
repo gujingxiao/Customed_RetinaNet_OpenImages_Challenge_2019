@@ -19,7 +19,7 @@ def show_image_debug(id_to_labels, draw, boxes, scores, labels):
     # visualize detections
     for box, score, label in zip(boxes[0], scores[0], labels[0]):
         # scores are sorted so we can break
-        if score < 0.2:
+        if score < 0.25:
             break
 
         color = (0, 255, 0)
@@ -115,9 +115,10 @@ def create_csv_for_retinanet(input_dir, out_file, label_arr, skip_box_thr=0.05, 
         out.write(id + ',')
         if os.path.exists(f):
             boxes, scores, labels = load_from_file_fast(f)
-            merged_boxes = filter_boxes(boxes, scores, labels, skip_box_thr)
+            merged_boxes = filter_boxes(boxes, scores, labels, skip_box_thr)[0]
             if len(merged_boxes) > limit_boxes:
                 # sort by score
+                merged_boxes = np.array(merged_boxes)
                 merged_boxes = merged_boxes[merged_boxes[:, 1].argsort()[::-1]][:limit_boxes]
 
             for i in range(len(merged_boxes)):
@@ -175,7 +176,7 @@ def create_csv_for_retinanet(input_dir, out_file, label_arr, skip_box_thr=0.05, 
         else:
             out.write('\n')
 
-        if index % 100 == 0:
+        if index % 1000 == 0:
             print(index, '/', len(files))
         index += 1
 

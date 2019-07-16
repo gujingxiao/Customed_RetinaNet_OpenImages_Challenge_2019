@@ -18,40 +18,41 @@ import keras
 from keras.utils import get_file
 import keras_resnet
 import keras_resnet.models
+from ..backbones import resnetV2
 
 from . import retinanet
 from . import Backbone
 from ..utils.image import preprocess_image
 
 
-class ResNetBackbone(Backbone):
+class ResNetV2Backbone(Backbone):
     """ Describes backbone information and provides utility functions.
     """
 
     def __init__(self, backbone):
-        super(ResNetBackbone, self).__init__(backbone)
+        super(ResNetV2Backbone, self).__init__(backbone)
         self.custom_objects.update(keras_resnet.custom_objects)
 
     def retinanet(self, *args, **kwargs):
         """ Returns a retinanet model using the correct backbone.
         """
-        return resnet_retinanet(*args, backbone=self.backbone, **kwargs)
+        return resnetv2_retinanet(*args, backbone=self.backbone, **kwargs)
 
     def download_imagenet(self):
         """ Downloads ImageNet weights and returns path to weights file.
         """
         resnet_filename = 'ResNet-{}-model.keras.h5'
-        resnet_resource = 'https://github.com/fizyr/keras-models/releases/download/v0.0.1/{}'.format(resnet_filename)
+        resnet_resource = 'https://github.com/keras-team/keras-applications/releases/download/resnet/{}'.format(resnet_filename)
         depth = int(self.backbone.replace('resnet', ''))
 
         filename = resnet_filename.format(depth)
         resource = resnet_resource.format(depth)
         if depth == 50:
-            checksum = '3e9f4e4f77bbe2c9bec13b53ee1c2319'
+            checksum = 'fac2f116257151a9d068a22e544a4917'
         elif depth == 101:
-            checksum = '05dc86924389e5b401a9ea0348a3213c'
+            checksum = 'c0ed64b8031c3730f411d2eb4eea35b5'
         elif depth == 152:
-            checksum = '6ee11ef2b135592f8031058820bb9e71'
+            checksum = 'ed17cf2e0169df9d443503ef94b23b33'
 
         return get_file(
             filename,
@@ -63,7 +64,7 @@ class ResNetBackbone(Backbone):
     def validate(self):
         """ Checks whether the backbone string is correct.
         """
-        allowed_backbones = ['resnet50', 'resnet101', 'resnet152']
+        allowed_backbones = ['resnet50v2', 'resnet101v2', 'resnet152v2']
         backbone = self.backbone.split('_')[0]
 
         if backbone not in allowed_backbones:
@@ -75,12 +76,12 @@ class ResNetBackbone(Backbone):
         return preprocess_image(inputs, mode='caffe')
 
 
-def resnet_retinanet(num_classes, backbone='resnet50', inputs=None, modifier=None, **kwargs):
+def resnetv2_retinanet(num_classes, backbone='resnet50v2', inputs=None, modifier=None, **kwargs):
     """ Constructs a retinanet model using a resnet backbone.
 
     Args
         num_classes: Number of classes to predict.
-        backbone: Which backbone to use (one of ('resnet50', 'resnet101', 'resnet152')).
+        backbone: Which backbone to use (one of ('resnet50v2', 'resnet101v2', 'resnet152v2')).
         inputs: The inputs to the network (defaults to a Tensor of shape (None, None, 3)).
         modifier: A function handler which can modify the backbone before using it in retinanet (this can be used to freeze backbone layers for example).
 
@@ -92,12 +93,12 @@ def resnet_retinanet(num_classes, backbone='resnet50', inputs=None, modifier=Non
         inputs = keras.layers.Input(shape=(None, None, 3))
 
     # create the resnet backbone
-    if backbone == 'resnet50':
-        resnet = keras_resnet.models.ResNet50(inputs, include_top=False, freeze_bn=True)
-    elif backbone == 'resnet101':
-        resnet = keras_resnet.models.ResNet101(inputs, include_top=False, freeze_bn=True)
-    elif backbone == 'resnet152':
-        resnet = keras_resnet.models.ResNet152(inputs, include_top=False, freeze_bn=True)
+    if backbone == 'resnet50v2':
+        resnet = resnetV2.ResNet50V2(input_tensor=inputs, include_top=False, freeze_bn=True)
+    elif backbone == 'resnet101v2':
+        resnet = resnetV2.ResNet101V2(input_tensor=inputs, include_top=False, freeze_bn=True)
+    elif backbone == 'resnet152v2':
+        resnet = resnetV2.ResNet152V2(input_tensor=inputs, include_top=False, freeze_bn=True)
     else:
         raise ValueError('Backbone (\'{}\') is invalid.'.format(backbone))
 

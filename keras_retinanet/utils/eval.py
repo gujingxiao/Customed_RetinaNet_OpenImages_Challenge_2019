@@ -173,6 +173,7 @@ def evaluate(
     # pickle.dump(all_annotations, open('all_annotations.pkl', 'wb'))
 
     # process detections and annotations
+    start = time.clock()
     for label in range(generator.num_classes()):
         false_positives = np.zeros((0,))
         true_positives  = np.zeros((0,))
@@ -226,5 +227,7 @@ def evaluate(
         # compute average precision
         average_precision  = _compute_ap(recall, precision)
         average_precisions[label] = average_precision, num_annotations
+
+        print('Finished Eval Label: {} / {}, Time used: {} s'.format(label, generator.num_classes(), round(time.clock() - start)))
 
     return average_precisions

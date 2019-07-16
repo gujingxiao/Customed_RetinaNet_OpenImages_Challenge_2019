@@ -2,11 +2,12 @@
 __modified_author__ = 'Jingxiao Gu : https://www.kaggle.com/gujingxiao0726'
 
 import pandas as pd
+import time
 from labelProcess.label_levels import *
 from retinanet_inference_submission.ensemble_boxes_functions import *
 
 def extend_boxes(boxes, d1, d2, parents, return_only_new=False):
-    intersection_thr = 0.75
+    intersection_thr = 0.9
     # print('Initial boxes: {}'.format(boxes.shape))
 
     # Add all parents boxes
@@ -60,9 +61,11 @@ def create_higher_level_classes_from_csv(input_subm, out_file, return_only_new=F
     ids = subm['ImageId'].values
     preds = subm['PredictionString'].values
     preds_modified = []
+    start = time.clock()
     for i in range(len(ids)):
         if i % 1000 == 0:
-            print('Index {}, Go for {}'.format(i, ids[i]))
+            elapsed = (time.clock() - start)
+            print('Index {}, Go for {}'.format(i, ids[i]), "Time used:", elapsed)
         id = ids[i]
         if str(preds[i]) == 'nan':
             preds_modified.append('')
@@ -79,10 +82,11 @@ def create_higher_level_classes_from_csv(input_subm, out_file, return_only_new=F
         new_boxes = extend_boxes(boxes, d1, d2, parents, return_only_new)
         box_str = flatten_boxes(new_boxes)
         preds_modified.append(box_str)
+
     subm['PredictionString'] = preds_modified
     subm.to_csv(out_file, index=False)
 
 
 if __name__ == '__main__':
-    create_higher_level_classes_from_csv('retinanet_ensemble_submission_0.05_0.85_predictions.csv',
-                                         'retinanet_ensemble_submission_0.05_0.85_predictions_all_levels.csv', return_only_new=False)
+    create_higher_level_classes_from_csv('retinanet_resnet152_101_new_ensemble_submission_0.05_0.55_predictions.csv',
+                                         'retinanet_resnet152_101_new_ensemble_submission_0.05_0.55_predictions_all_levels.csv', return_only_new=False)

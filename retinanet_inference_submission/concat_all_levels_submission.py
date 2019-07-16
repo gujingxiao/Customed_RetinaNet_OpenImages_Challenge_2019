@@ -32,6 +32,7 @@ predictionstring2 = level2csv.PredictionString
 predictionstring3 = level3csv.PredictionString
 predictionstring4 = level4csv.PredictionString
 predictionstring5 = level5csv.PredictionString
+newpredictionstrings = []
 
 for idx in range(len(listid)):
     if idx % 100 == 0:
@@ -69,7 +70,7 @@ for idx in range(len(listid)):
 
 
     ensembles = ensem1 + ensem2 + ensem3 + ensem4 + ensem5
-    predictionstring1[idx] = ensembles
+    newpredictionstrings.append(ensembles)
 
-level1csv.PredictionString = predictionstring1
+level1csv.PredictionString = newpredictionstrings
 level1csv.to_csv(saveName, index=False)

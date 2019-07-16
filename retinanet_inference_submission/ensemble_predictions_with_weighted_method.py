@@ -90,7 +90,7 @@ def create_csv_for_retinanet_multiple_predictions(input_dirs, out_file, label_ar
             out.write(str1)
 
         out.write('\n')
-        if index % 100 == 0:
+        if index % 1000 == 0:
             elapsed = (time.clock() - start)
             print(index, '/', len(files), "Time used:", elapsed)
         index += 1
@@ -99,16 +99,15 @@ def create_csv_for_retinanet_multiple_predictions(input_dirs, out_file, label_ar
 
 
 if __name__ == '__main__':
-    skip_box_thr = 0.05
-    intersection_thr = 0.85
-    label_level = 1
-    limit_boxes = 900
-    type = 'max'
+    skip_box_thr = 0.15
+    intersection_thr = 0.55
+    label_level = 5
+    limit_boxes = 600
+    type = 'avg'
 
     input_dirs = [
-        ROOT_PATH + 'cache_retinanet_level_{}_resnet50/'.format(label_level),
-        ROOT_PATH + 'cache_retinanet_level_{}_resnet101/'.format(label_level),
-        ROOT_PATH + 'cache_retinanet_level_{}_resnet152/'.format(label_level),
+        ROOT_PATH + 'new_pkl/cache_retinanet_level_{}_resnet101/'.format(label_level),
+        ROOT_PATH + 'new_pkl/cache_retinanet_level_{}_resnet152/'.format(label_level),
     ]
 
     if label_level == 1:

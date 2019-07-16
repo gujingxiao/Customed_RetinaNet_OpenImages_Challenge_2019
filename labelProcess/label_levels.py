@@ -147,6 +147,19 @@ LEVEL_4_LABELS = ['Pineapple', 'Kettle', 'Washing machine', 'Bat', 'Sombrero', '
 LEVEL_5_LABELS = ['Human hair', 'Human arm', 'Human head', 'Human eye', 'Human hand', 'Human leg', 'Human nose',
                   'Human mouth', 'Book', 'Human ear', 'Human foot']
 
+
+# Level Parents 6: 1051344 - 18621
+LEVEL_6_LABELS = ['Tree', 'Person', 'Footwear', 'Flower', 'Car', 'Building', 'Table', 'Land vehicle', 'Boat', 'Toy',
+                  'Vehicle', 'Bird', 'Tableware', 'Drink', 'Furniture', 'Sculpture', 'Dessert', 'Fruit', 'Fish', 'Vegetable']
+
+
+# Level Parents 7: 17442 - 205
+LEVEL_7_LABELS = ['Animal', 'Musical instrument', 'Helmet', 'Hat', 'Marine invertebrates', 'Insect', 'Trousers', 'Ball',
+                  'Office supplies', 'Traffic sign', 'Watercraft', 'Kitchen appliance', 'Couch', 'Bed', 'Beetle', 'Carnivore',
+                  'Seafood', 'Weapon', 'Luggage and bags', 'Home appliance', 'Aircraft', 'Moths and butterflies', 'Marine mammal',
+                  'Invertebrate', 'Shellfish', 'Skirt', 'Clock', 'Glove', 'Sandwich', 'Reptile', 'Plumbing fixture', 'Bear',
+                  'Personal care', 'Squash', 'Racket', 'Telephone', 'Turtle']
+
 # Children Level
 LEVEL_CHILDREN = ['/m/03qrc', '/m/02wv84t', '/m/02jz0l', '/m/09ld4', '/m/01h44', '/m/0n28_', '/m/071qp', '/m/01xqw', '/m/01vbnl',
                   '/m/0by6g', '/m/03d443', '/m/03fwl', '/m/0162_1', '/m/0175cv', '/m/03fj2', '/m/01_5g', '/m/0h8n6ft', '/m/08pbxl',
@@ -198,6 +211,19 @@ LEVEL_CHILDREN = ['/m/03qrc', '/m/02wv84t', '/m/02jz0l', '/m/09ld4', '/m/01h44',
                   '/m/05bm6', '/m/03q69', '/m/043nyj', '/m/02cvgx', '/m/0gd36', '/m/04vv5k', '/m/07bgp', '/m/02zt3', '/m/03kt2w',
                   '/m/0898b', '/m/0dj6p', '/m/02z51p', '/m/01bfm9', '/m/07jdr', '/m/09d5_', '/m/04c0y', '/m/09kmb', '/m/015qff',
                   '/m/071p9', '/m/0bwd_0j']
+
+# Parents Level
+LEVEL_PARENTS = ['/m/07j7r', '/m/01g317', '/m/09j5n', '/m/0c9ph5', '/m/0k4j', '/m/0cgh4',
+                   '/m/04bcr3', '/m/01prls', '/m/019jd', '/m/0138tl', '/m/07yv9',
+                   '/m/015p6', '/m/04brg2', '/m/0271t', '/m/0c_jw', '/m/06msq', '/m/0270h',
+                   '/m/02xwb', '/m/0ch_cf', '/m/0f4s2w', '/m/0jbk', '/m/04szw', '/m/0zvk5',
+                   '/m/02dl1y', '/m/03hl4l9', '/m/03vt0', '/m/07mhn', '/m/018xm',
+                   '/m/02rdsp', '/m/01mqdt', '/m/01rzcn', '/m/0h99cwc', '/m/02crq1',
+                   '/m/03ssj5', '/m/020jm', '/m/01lrl', '/m/06nwz', '/m/083kb',
+                   '/m/0hf58v5', '/m/019dx1', '/m/0k5j', '/m/0d_2m', '/m/0gd2v',
+                   '/m/03xxp', '/m/0fbdv', '/m/02wv6h6', '/m/01x3z', '/m/0174n1',
+                   '/m/0l515', '/m/06bt6', '/m/02pkr5', '/m/01dws', '/m/02w3_ws',
+                   '/m/0dv77', '/m/0dv9c', '/m/07cx4', '/m/09dzg']
 
 def save_in_file(arr, file_name):
     pickle.dump(arr, gzip.open(file_name, 'wb+', compresslevel=3))

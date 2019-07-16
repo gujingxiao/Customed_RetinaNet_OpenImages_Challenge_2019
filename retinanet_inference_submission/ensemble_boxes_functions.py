@@ -4,6 +4,87 @@ __modified_author__ = 'Jingxiao Gu : https://www.kaggle.com/gujingxiao0726'
 
 import numpy as np
 
+def py_cpu_softnms(dets, Nt=0.3, sigma=0.5, thresh=0.001, method=2):
+    """
+    py_cpu_softnms
+    :param dets:   boexs 坐标矩阵 format [y1, x1, y2, x2]
+    :param sc:     每个 boxes 对应的分数
+    :param Nt:     iou 交叠门限
+    :param sigma:  使用 gaussian 函数的方差
+    :param thresh: 最后的分数门限
+    :param method: 使用的方法
+    :return:       留下的 boxes 的 index
+    """
+
+    # indexes concatenate boxes with the last column
+    N = dets.shape[0]
+    indexes = np.array([np.arange(N)])
+    dets = np.concatenate((dets, indexes.T), axis=1)
+
+    # the order of boxes coordinate is [y1,x1,y2,x2]
+    y1 = dets[:, 2]
+    x1 = dets[:, 1]
+    y2 = dets[:, 4]
+    x2 = dets[:, 3]
+    scores = dets[:, 0]
+    areas = (x2 - x1 + 1) * (y2 - y1 + 1)
+
+    for i in range(N):
+        # intermediate parameters for later parameters exchange
+        tBD = dets[i, :].copy()
+        tscore = scores[i].copy()
+        tarea = areas[i].copy()
+        pos = i + 1
+
+        #
+        if i != N-1:
+            maxscore = np.max(scores[pos:], axis=0)
+            maxpos = np.argmax(scores[pos:], axis=0)
+        else:
+            maxscore = scores[-1]
+            maxpos = 0
+        if tscore < maxscore:
+            dets[i, :] = dets[maxpos + i + 1, :]
+            dets[maxpos + i + 1, :] = tBD
+            tBD = dets[i, :]
+
+            scores[i] = scores[maxpos + i + 1]
+            scores[maxpos + i + 1] = tscore
+            tscore = scores[i]
+
+            areas[i] = areas[maxpos + i + 1]
+            areas[maxpos + i + 1] = tarea
+            tarea = areas[i]
+
+        # IoU calculate
+        xx1 = np.maximum(dets[i, 1], dets[pos:, 1])
+        yy1 = np.maximum(dets[i, 2], dets[pos:, 2])
+        xx2 = np.minimum(dets[i, 3], dets[pos:, 3])
+        yy2 = np.minimum(dets[i, 4], dets[pos:, 4])
+
+        w = np.maximum(0.0, xx2 - xx1 + 1)
+        h = np.maximum(0.0, yy2 - yy1 + 1)
+        inter = w * h
+        ovr = inter / (areas[i] + areas[pos:] - inter)
+
+        # Three methods: 1.linear 2.gaussian 3.original NMS
+        if method == 1:  # linear
+            weight = np.ones(ovr.shape)
+            weight[ovr > Nt] = weight[ovr > Nt] - ovr[ovr > Nt]
+        elif method == 2:  # gaussian
+            weight = np.exp(-(ovr * ovr) / sigma)
+        else:  # original NMS
+            weight = np.ones(ovr.shape)
+            weight[ovr > Nt] = 0
+
+        scores[pos:] = weight * scores[pos:]
+
+    # select the boxes and keep the corresponding indexes
+    inds = dets[:, 4][scores > thresh]
+    keep = inds.astype(int)
+    print(keep)
+
+    return keep
 
 def nms_standard(dets, thresh):
     scores = dets[:, 0]
@@ -63,16 +144,22 @@ def bb_intersection_over_union(boxA, boxB):
 
 
 def filter_boxes(boxes, scores, labels, thr):
-    box = []
-    for j in range(boxes.shape[1]):
-        label = labels[0, j].astype(np.int64)
-        score = scores[0, j]
-        if score < thr:
-            break
-
-        b = [int(label), float(score), float(boxes[0, j, 0]), float(boxes[0, j, 1]), float(boxes[0, j, 2]), float(boxes[0, j, 3])]
-        box.append(b)
-    return np.array(box)
+    new_boxes = []
+    for i in range(boxes.shape[0]):
+        box = []
+        for j in range(boxes.shape[1]):
+            label = labels[i, j].astype(np.int64)
+            score = scores[i, j]
+            if score < thr:
+                break
+            # Fix for mirror predictions
+            if i == 0:
+                b = [int(label), float(score), float(boxes[i, j, 0]), float(boxes[i, j, 1]), float(boxes[i, j, 2]), float(boxes[i, j, 3])]
+            else:
+                b = [int(label), float(score), 1 - float(boxes[i, j, 2]), float(boxes[i, j, 1]), 1 - float(boxes[i, j, 0]), float(boxes[i, j, 3])]
+            box.append(b)
+        new_boxes.append(box)
+    return new_boxes
 
 
 def filter_boxes_v2(boxes, scores, labels, thr):
@@ -81,12 +168,17 @@ def filter_boxes_v2(boxes, scores, labels, thr):
         for i in range(len(boxes[t])):
             box = []
             for j in range(boxes[t][i].shape[0]):
-                label = labels[t][i][j].astype(np.int32)
+                label = labels[t][i][j].astype(np.int64)
                 score = scores[t][i][j]
                 if score < thr:
                     break
-                b = [int(label), float(score), float(boxes[t][i][j, 0]), float(boxes[t][i][j, 1]), float(boxes[t][i][j, 2]), float(boxes[t][i][j, 3])]
+                # Mirror fix !!!
+                if i == 0:
+                    b = [int(label), float(score), float(boxes[t][i][j, 0]), float(boxes[t][i][j, 1]), float(boxes[t][i][j, 2]), float(boxes[t][i][j, 3])]
+                else:
+                    b = [int(label), float(score), 1 - float(boxes[t][i][j, 2]), float(boxes[t][i][j, 1]), 1 - float(boxes[t][i][j, 0]), float(boxes[t][i][j, 3])]
                 box.append(b)
+            # box = np.array(box)
             new_boxes.append(box)
     return new_boxes
 
@@ -124,6 +216,26 @@ def merge_boxes_weighted(box1, box2, w1, w2, type):
     return box
 
 
+# def merge_all_boxes_for_image(boxes, intersection_thr=0.55, type='avg'):
+#
+#     new_boxes = boxes[0].copy()
+#     init_weight = 1/len(boxes)
+#     weights = [init_weight] * len(new_boxes)
+#
+#     for j in range(1, len(boxes)):
+#         for k in range(len(boxes[j])):
+#             index, best_iou = find_matching_box(new_boxes, boxes[j][k], intersection_thr)
+#             if index != -1:
+#                 new_boxes[index] = merge_boxes_weighted(new_boxes[index], boxes[j][k], weights[index], init_weight, type)
+#                 weights[index] += init_weight
+#             else:
+#                 new_boxes.append(boxes[j][k])
+#                 weights.append(init_weight)
+#
+#     for i in range(len(new_boxes)):
+#         new_boxes[i][1] *= weights[i]
+#     return np.array(new_boxes)
+
 def merge_all_boxes_for_image(boxes, intersection_thr=0.55, type='avg'):
 
     new_boxes = boxes[0].copy()
@@ -147,16 +259,4 @@ def merge_all_boxes_for_image(boxes, intersection_thr=0.55, type='avg'):
     return np.array(new_boxes)
 
 
-# def new_merge_all_boxes_for_image(boxes, intersection_thr=0.7):
-#     new_boxes = []
-#     kp_boxes = []
-#     for line in boxes:
-#         for item in range(len(line)):
-#             new_boxes.append(line[item])
-#
-#     if len(new_boxes) > 0:
-#         new_boxes = np.array(new_boxes)
-#         kp = nms_standard(new_boxes[:, 1:].astype(np.float64).copy(), intersection_thr)
-#         kp_boxes = new_boxes[kp].copy()
-#
-#     return np.array(kp_boxes)
+

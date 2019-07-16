@@ -342,10 +342,6 @@ def main(args=None):
     # print model summary
     print(model.summary())
 
-    # this lets the generator compute backbone layer shapes using the actual backbone model
-    if 'vgg' in args.backbone or 'densenet' in args.backbone:
-        train_generator.compute_shapes = make_shapes_callback(model)
-
     # create the callbacks
     callbacks = create_callbacks(model, args)
 
@@ -365,23 +361,24 @@ def main(args=None):
         max_queue_size= 20,
         use_multiprocessing=False)
 
-
+# Model Options: resnet50, resnet101, resnet152, resnet50v2, resnet101v2, resnet152v2, resnext50, resnext101
+# Other models will cause Error.
 if __name__ == '__main__':
     params = [
-        # '--snapshot', 'snapshots/resnet50_oid_09.h5',
-        '--weights', 'snapshots/resnet50_oid_level_1_16.h5',
-        # '--imagenet-weights',
-        #'--no-weights',
-        # '--gpu', '0',
+        # '--snapshot', 'snapshots/resnext50_oid_level_1_19.h5',
+        # '--weights', '../resnet50_lb_046005/resnet50_oid_map_level_3_06340.h5',
+        '--weights', 'pretrained_models/resnet50v2_weights_tf_dim_ordering_tf_kernels_notop.h5',
+        # '--no-weights',
+        '--gpu', '1',
         '--label-level','1',
-        '--steps', '200',
-        '--multi-gpu', '2',
-        '--multi-gpu-force',
-        '--backbone', 'resnet50',
+        '--steps', '500',
+        # '--multi-gpu', '2',
+        # '--multi-gpu-force',
+        '--backbone', 'resnet50v2',
         '--batch-size', '2',
-        '--image-min-side', '768',
-        '--image-max-side', '1024',
-        '--freeze-backbone', 'True',
+        '--image-min-side', '384',
+        '--image-max-side', '512',
+        '--freeze-backbone', False,
         '--random-transform', False,
         'oid',
         ROOT_PATH,

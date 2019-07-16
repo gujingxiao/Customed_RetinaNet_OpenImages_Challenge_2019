@@ -45,16 +45,14 @@ class Backbone(object):
 def backbone(backbone_name):
     """ Returns a backbone object for the given backbone.
     """
-    if 'resnet' in backbone_name:
+    if 'v2' in backbone_name and 'resnet' in backbone_name:
+        from .resnetv2 import ResNetV2Backbone as b
+    elif 'resnet' in backbone_name:
         from .resnet import ResNetBackbone as b
     elif 'resnext' in backbone_name:
         from .resnext import ResNeXtBackbone as b
     elif 'mobilenet' in backbone_name:
         from .mobilenet import MobileNetBackbone as b
-    elif 'vgg' in backbone_name:
-        from .vgg import VGGBackbone as b
-    elif 'densenet' in backbone_name:
-        from .densenet import DenseNetBackbone as b
     else:
         raise NotImplementedError('Backbone class for  \'{}\' not implemented.'.format(backbone))
 

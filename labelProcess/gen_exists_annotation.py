@@ -3,7 +3,7 @@ import pandas as pd
 import random
 from labelProcess.label_levels import ROOT_PATH
 
-for level in range(1, 6):
+for level in range(1, 8):
     csvfile = ROOT_PATH + 'output/level_{}_files/train-annotations-bbox-level-{}.csv'.format(level, level)
     imagePath = ROOT_PATH + 'train/'
 
@@ -29,8 +29,13 @@ for level in range(1, 6):
         ratio = 0.03
     elif level == 4:
         ratio = 0.04
-    else:
+    elif level == 5:
         ratio = 0.03
+    elif level == 6:
+        ratio = 0.006
+    elif level == 7:
+        ratio = 0.03
+
     savefile_val = ROOT_PATH + 'output/level_{}_files/val-exists-annotations-bbox-level-{}.csv'.format(level, level)
     savefile_train = ROOT_PATH + 'output/level_{}_files/train-exists-annotations-bbox-level-{}.csv'.format(level, level)
 

@@ -59,8 +59,8 @@ def main(args=None):
 
 if __name__ == '__main__':
     params = [
-        './snapshots/resnet50_oid_09.h5',
-        './snapshots/resnet50_oid_09_converted.h5',
-        '--backbone', 'resnet50'
+        '../resnet101_lb_047000/resnet101_oid_level_2_98.h5',
+        '../resnet101_lb_047000/resnet101_oid_level_2_98_converted.h5',
+        '--backbone', 'resnet101'
     ]
     main(params)

@@ -18,40 +18,40 @@ import keras
 from keras.utils import get_file
 import keras_resnet
 import keras_resnet.models
+from ..backbones import resNeXt
 
 from . import retinanet
 from . import Backbone
 from ..utils.image import preprocess_image
 
 
-class ResNetBackbone(Backbone):
+class ResNeXtBackbone(Backbone):
     """ Describes backbone information and provides utility functions.
     """
 
     def __init__(self, backbone):
-        super(ResNetBackbone, self).__init__(backbone)
+        super(ResNeXtBackbone, self).__init__(backbone)
         self.custom_objects.update(keras_resnet.custom_objects)
 
     def retinanet(self, *args, **kwargs):
         """ Returns a retinanet model using the correct backbone.
         """
-        return resnet_retinanet(*args, backbone=self.backbone, **kwargs)
+        return resnext_retinanet(*args, backbone=self.backbone, **kwargs)
 
     def download_imagenet(self):
         """ Downloads ImageNet weights and returns path to weights file.
         """
-        resnet_filename = 'ResNet-{}-model.keras.h5'
-        resnet_resource = 'https://github.com/fizyr/keras-models/releases/download/v0.0.1/{}'.format(resnet_filename)
-        depth = int(self.backbone.replace('resnet', ''))
+        resnext_filename = 'resnext{}_weights_tf_dim_ordering_tf_kernels_notop.h5'
+        resnext_resource = 'https://github.com/keras-team/keras-applications/releases/download/resnet/'
+        depth = int(self.backbone.replace('resnext', ''))
 
-        filename = resnet_filename.format(depth)
-        resource = resnet_resource.format(depth)
+        filename = resnext_filename.format(depth)
+        resource = resnext_resource
+
         if depth == 50:
-            checksum = '3e9f4e4f77bbe2c9bec13b53ee1c2319'
+            checksum = '62527c363bdd9ec598bed41947b379fc'
         elif depth == 101:
-            checksum = '05dc86924389e5b401a9ea0348a3213c'
-        elif depth == 152:
-            checksum = '6ee11ef2b135592f8031058820bb9e71'
+            checksum = '0f678c91647380debd923963594981b3'
 
         return get_file(
             filename,
@@ -63,7 +63,7 @@ class ResNetBackbone(Backbone):
     def validate(self):
         """ Checks whether the backbone string is correct.
         """
-        allowed_backbones = ['resnet50', 'resnet101', 'resnet152']
+        allowed_backbones = ['resnext50', 'resnext101']
         backbone = self.backbone.split('_')[0]
 
         if backbone not in allowed_backbones:
@@ -75,7 +75,7 @@ class ResNetBackbone(Backbone):
         return preprocess_image(inputs, mode='caffe')
 
 
-def resnet_retinanet(num_classes, backbone='resnet50', inputs=None, modifier=None, **kwargs):
+def resnext_retinanet(num_classes, backbone='resnext50', inputs=None, modifier=None, **kwargs):
     """ Constructs a retinanet model using a resnet backbone.
 
     Args
@@ -92,18 +92,24 @@ def resnet_retinanet(num_classes, backbone='resnet50', inputs=None, modifier=Non
         inputs = keras.layers.Input(shape=(None, None, 3))
 
     # create the resnet backbone
-    if backbone == 'resnet50':
-        resnet = keras_resnet.models.ResNet50(inputs, include_top=False, freeze_bn=True)
-    elif backbone == 'resnet101':
-        resnet = keras_resnet.models.ResNet101(inputs, include_top=False, freeze_bn=True)
-    elif backbone == 'resnet152':
-        resnet = keras_resnet.models.ResNet152(inputs, include_top=False, freeze_bn=True)
+    if backbone == 'resnext50':
+        resnext = resNeXt.ResNeXt50(input_tensor=inputs, include_top=False, weights=None)
+    elif backbone == 'resnext101':
+        resnext = resNeXt.ResNeXt101(input_tensor=inputs, include_top=False, weights=None)
     else:
         raise ValueError('Backbone (\'{}\') is invalid.'.format(backbone))
 
     # invoke modifier if given
     if modifier:
-        resnet = modifier(resnet)
+        resnext = modifier(resnext)
 
     # create the full model
-    return retinanet.retinanet(inputs=inputs, num_classes=num_classes, backbone_layers=resnet.outputs[0:], **kwargs)
+    return retinanet.retinanet(inputs=inputs, num_classes=num_classes, backbone_layers=resnext.outputs[0:], **kwargs)
+
+
+def resnext50_retinanet(num_classes, inputs=None, **kwargs):
+    return resnext_retinanet(num_classes=num_classes, backbone='resnext50', inputs=inputs, **kwargs)
+
+
+def resnext101_retinanet(num_classes, inputs=None, **kwargs):
+    return resnext_retinanet(num_classes=num_classes, backbone='resnext101', inputs=inputs, **kwargs)
